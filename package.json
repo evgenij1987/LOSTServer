@@ -1,0 +1,16 @@
+{
+  "name": "LOSTServer",
+  "version": "0.0.1",
+  "description": "Simple webserver for streaming audio files via http & starting ML lib and Music analyzing lib",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "LOST",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.2",
+    "express": "^4.13.1"
+  }
+}
