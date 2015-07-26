@@ -72,7 +72,9 @@ exports.playAudioTrack = function (req, res) {
  * @param res
  */
 exports.learnFromSongAndContext = function (req, res) {
-
+    var userContext=req.body.context;
+    var playedFileIndex=req.body.songIndex;
+    var user=req.body.user;
     /* */
     var learnCommand = "Learn this!";
     writeToWekaMLProcess(learnCommand,
