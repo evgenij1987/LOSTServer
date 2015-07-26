@@ -72,23 +72,49 @@ exports.playAudioTrack = function (req, res) {
  * @param res
  */
 exports.learnFromSongAndContext = function (req, res) {
-    var userContext=req.body.context;
-    var playedFileIndex=req.body.songIndex;
-    var user=req.body.user;
-    /* */
+
     var learnCommand = "Learn this!";
-    writeToWekaMLProcess(learnCommand,
-        function (lernresponse) {
 
-            res.sendStatus(200);
 
-        }, function (error) {
+    var userContext=req.body.context;
+    var playedFileIndex=req.body.fileIndex;
+    var user=req.body.user;
+    var feedBack=req.body.feedBack;
+    
+    var jsonFeaturesFilePath;
+    fs.readdir("./audio_features/json", function (err, files) {
 
-            console.log('err data: ' + error);
+        var jsonFileName=files[playedFileIndex];
+        jsonFeaturesFilePath = path.join(__dirname, 'audio_features/json/' + jsonFileName);
 
-        }
-    );
+
+        fs.readFile(jsonFeaturesFilePath, 'utf8', function (err, data) {
+            if (err) throw err;
+            var audioFeatures = JSON.parse(data);
+            learnCommand=JSON.stringify(audioFeatures);
+            writeToWekaMLProcess(learnCommand,
+                function (lernresponse) {
+
+                    console.log(lernresponse.toString("utf-8"));
+                    res.sendStatus(200);
+
+                }, function (error) {
+
+                    console.log('err data: ' + error);
+
+                }
+            );
+
+        })
+
+
+
+    });
+
 }
+
+
+
 /**
  * Recommended songs are retrieved from ML lib processed
  * and send back same way as in listAudioTracks() method
