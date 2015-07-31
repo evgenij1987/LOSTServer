@@ -4,6 +4,7 @@
 AudioTrack = require('./AudioTrack'),
     fs = require('fs'),
     path = require('path');
+LearnObject=require('./LearnObject');
 
 var wekaMLProcess;
 var debugMode = true;
@@ -76,7 +77,7 @@ exports.learnFromSongAndContext = function (req, res) {
     var learnCommand = "Learn this!";
 
 
-    var userContext=req.body.context;
+    var contextFeatures=req.body.context;
     var playedFileIndex=req.body.fileIndex;
     var user=req.body.user;
     var feedBack=req.body.feedBack;
@@ -91,7 +92,8 @@ exports.learnFromSongAndContext = function (req, res) {
         fs.readFile(jsonFeaturesFilePath, 'utf8', function (err, data) {
             if (err) throw err;
             var audioFeatures = JSON.parse(data);
-            learnCommand=JSON.stringify(audioFeatures);
+            learnCommand=JSON.stringify(new LearnObject(user, audioFeatures, contextFeatures));
+            learnCommand=learnCommand.replace(/:\s*1\s*}|,/g, '1.0');
             writeToWekaMLProcess(learnCommand,
                 function (lernresponse) {
 
