@@ -93,7 +93,9 @@ exports.learnFromSongAndContext = function (req, res) {
             if (err) throw err;
             var audioFeatures = JSON.parse(data);
             learnCommand=JSON.stringify(new LearnObject(user, audioFeatures, contextFeatures));
-            learnCommand=learnCommand.replace(/:\s*1\s*}|,/g, '1.0');
+            //console.log(learnCommand+"\n \n \n");
+            //Replace 1 by 1.0 as expected by learning module
+            learnCommand=learnCommand.replace(/(:\s*)1(\s*}|,)/g, "$11.0$2");//1.0 in between variables $1 and $2
             writeToWekaMLProcess(learnCommand,
                 function (lernresponse) {
 
