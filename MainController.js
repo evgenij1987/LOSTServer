@@ -22,14 +22,16 @@ exports.init = function (mode) {
  * @param res
  */
 exports.listAudioTracks = function (req, res) {
-    fs.readdir("./mp3", function (err, files) {
+    fs.readdir("./mp3/tracks", function (err, files) {
 
         var audioTracks = new Array();
         var audioTrack;
         for (var i = 0; i < files.length; i++) {
+           if(!isUnixHiddenPath(files[i])){
+               audioTrack = new AudioTrack(files[i], i);
+               audioTracks.push(audioTrack);
+           }
 
-            audioTrack = new AudioTrack(files[i], i);
-            audioTracks.push(audioTrack);
         }
         res.send(JSON.stringify(audioTracks));
     });
@@ -44,16 +46,16 @@ exports.playAudioTrack = function (req, res) {
     var audioTrack = req.params.id;
     var filePath;
     if (isNaN(audioTrack)) {
-        filePath = path.join(__dirname, 'mp3/' + audioTrack);
+        filePath = path.join(__dirname, 'mp3/tracks/' + audioTrack);
         if (filePath)
             streamFile(filePath, res);
 
     } else {
-        fs.readdir("./mp3", function (err, files) {
+        fs.readdir("./mp3/tracks", function (err, files) {
 
             var audioTrackName = files[audioTrack];
             if (audioTrackName) {
-                filePath = path.join(__dirname, 'mp3/' + audioTrackName);
+                filePath = path.join(__dirname, 'mp3/tracks/' + audioTrackName);
 
                 streamFile(filePath, res);
 
@@ -92,6 +94,8 @@ exports.learnFromSongAndContext = function (req, res) {
         fs.readFile(jsonFeaturesFilePath, 'utf8', function (err, data) {
             if (err) throw err;
             var audioFeatures = JSON.parse(data);
+            //inits if analysing of file was no success
+            initAudioFeaturesIfEmpty(audioFeatures);
             learnCommand=JSON.stringify(new LearnObject(user, audioFeatures, contextFeatures));
             //console.log(learnCommand+"\n \n \n");
             //Replace 1 by 1.0 as expected by learning module
@@ -131,6 +135,7 @@ exports.listRecommendedAudioTracks = function (req, res) {
     var audioTrack;
     var audioTracks = new Array();
     for (var i = 0; i < 10; i++) {
+
         audioTrack = new AudioTrack("name" + i, i);
         audioTracks.push(audioTrack);
     }
@@ -233,3 +238,31 @@ function streamFile(filePath, res) {
     });
 
 }
+/**
+ * For some mp3 files analysis is not possible, fill ? for instead of real numbers
+ * as expected by learning module. If data is present obj is kept unchanged
+ * @param audioFeatures
+ */
+function initAudioFeaturesIfEmpty(audioFeatures){
+    if(audioFeatures.data[0].values.length==1){
+
+        var attributes=audioFeatures.header.attributes;
+
+        //1 because 0 is always avaliable as file name
+        for(var i=1;i<attributes.length;i++){
+            audioFeatures.data[0].values.push('?');
+        }
+    }else{
+        return audioFeatures;
+    }
+
+}
+
+/**
+ * Checks whether a path starts with or contains a hidden file or a folder.
+ * @param {string} source - The path of the file that needs to be validated.
+ * returns {boolean} - `true` if the source is blacklisted and otherwise `false`.
+ */
+var isUnixHiddenPath = function (path) {
+    return (/(^|.\/)\.+[^\/\.]/g).test(path);
+};
