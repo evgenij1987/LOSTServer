@@ -171,7 +171,7 @@ function handleRecommendation(data, res) {
     //SEND RECOMMENDATIONS INSTEAD HERE
     fs.readdir("./mp3/tracks", function (err, files) {
 
-        var audioTracks = getAudioTracks(files, 0, files.length);
+        var audioTracks = getAudioTracks(files, 0, 10);
         res.send(JSON.stringify(audioTracks));
     });
 
