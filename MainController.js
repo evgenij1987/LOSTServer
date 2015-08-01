@@ -4,10 +4,13 @@
 AudioTrack = require('./AudioTrack'),
     fs = require('fs'),
     path = require('path');
-LearnObject=require('./LearnObject');
+LearnObject = require('./LearnObject');
 
+var dummyAudioFeatures = require('./audio_analysis_module/dummyAudioFeatures.json');
 var wekaMLProcess;
 var debugMode = true;
+const ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP = /(:\s*)1(\s*}|,)/g;
+
 
 exports.init = function (mode) {
 
@@ -15,6 +18,7 @@ exports.init = function (mode) {
     wekaMLProcess = runMLProcess();
 
 };
+
 
 /**
  * Files from /mp3 folder are listed in a JSON reponse
@@ -24,17 +28,29 @@ exports.init = function (mode) {
 exports.listAudioTracks = function (req, res) {
     fs.readdir("./mp3/tracks", function (err, files) {
 
-        var audioTracks = new Array();
-        var audioTrack;
-        for (var i = 0; i < files.length; i++) {
-           if(!isUnixHiddenPath(files[i])){
-               audioTrack = new AudioTrack(files[i], i);
-               audioTracks.push(audioTrack);
-           }
-
-        }
+        var audioTracks = getAudioTracks(files, 0, files.length);
         res.send(JSON.stringify(audioTracks));
     });
+}
+
+/**
+ * Reads an interval of files into AudioTrack objects
+ * @param files
+ * @param from
+ * @param to
+ * @returns {Array}
+ */
+function getAudioTracks(files, from, to) {
+    var audioTracks = new Array();
+    var audioTrack;
+    for (var i = from; i < to; i++) {
+        if (!isUnixHiddenPath(files[i])) {
+            audioTrack = new AudioTrack(files[i], i);
+            audioTracks.push(audioTrack);
+        }
+
+    }
+    return audioTracks;
 }
 /**
  * AudioTrack is selected via filename or file index and played via piped via
@@ -78,49 +94,43 @@ exports.learnFromSongAndContext = function (req, res) {
 
     var learnCommand = "Learn this!";
 
+    var contextFeatures = req.body.context;
+    var playedFileIndex = req.body.fileIndex;
+    var user = req.body.user;
+    var feedBack = req.body.feedBack;
 
-    var contextFeatures=req.body.context;
-    var playedFileIndex=req.body.fileIndex;
-    var user=req.body.user;
-    var feedBack=req.body.feedBack;
-    
     var jsonFeaturesFilePath;
     fs.readdir("./audio_features/json", function (err, files) {
 
-        var jsonFileName=files[playedFileIndex];
+        var jsonFileName = files[playedFileIndex];
         jsonFeaturesFilePath = path.join(__dirname, 'audio_features/json/' + jsonFileName);
 
+        //load json file, done same way as loading javascript
+        var audioFeatures = require(jsonFeaturesFilePath);
 
-        fs.readFile(jsonFeaturesFilePath, 'utf8', function (err, data) {
-            if (err) throw err;
-            var audioFeatures = JSON.parse(data);
-            //inits if analysing of file was no success
-            initAudioFeaturesIfEmpty(audioFeatures);
-            learnCommand=JSON.stringify(new LearnObject(user, audioFeatures, contextFeatures));
-            //console.log(learnCommand+"\n \n \n");
-            //Replace 1 by 1.0 as expected by learning module
-            learnCommand=learnCommand.replace(/(:\s*)1(\s*}|,)/g, "$11.0$2");//1.0 in between variables $1 and $2
-            writeToWekaMLProcess(learnCommand,
-                function (lernresponse) {
+        initAudioFeaturesIfEmpty(audioFeatures);
+        learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures));
+        //console.log(learnCommand+"\n \n \n");
+        //Replace 1 by 1.0 as expected by learning module
 
-                    console.log(lernresponse.toString("utf-8"));
-                    res.sendStatus(200);
+        learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
+        writeToWekaMLProcess(learnCommand,
+            function (lernresponse) {
 
-                }, function (error) {
+                console.log(lernresponse.toString("utf-8"));
+                res.sendStatus(200);
 
-                    console.log('err data: ' + error);
+            }, function (error) {
 
-                }
-            );
+                console.log('err data: ' + error);
 
-        })
+            }
+        );
 
+    })
 
-
-    });
 
 }
-
 
 
 /**
@@ -131,15 +141,10 @@ exports.learnFromSongAndContext = function (req, res) {
  */
 exports.listRecommendedAudioTracks = function (req, res) {
 
-    /* JUST FOR TESTING */
-    var audioTrack;
-    var audioTracks = new Array();
-    for (var i = 0; i < 10; i++) {
+    var contextFeatures = req.body.context;
+    var user = req.body.user;
 
-        audioTrack = new AudioTrack("name" + i, i);
-        audioTracks.push(audioTrack);
-    }
-    var getRecommendedItemsCommand = JSON.stringify(audioTracks);
+    var getRecommendedItemsCommand = JSON.stringify("list recommended");
 
 
     if (!debugMode) {//PUT REAL COMMAND TO LEARNING LIB IN THIS STRING
@@ -163,8 +168,12 @@ exports.listRecommendedAudioTracks = function (req, res) {
 function handleRecommendation(data, res) {
     var recommendation = JSON.parse(data);
 
-    //PROCESS RECOMMENDATION HERE
-    res.send(recommendation);
+    //SEND RECOMMENDATIONS INSTEAD HERE
+    fs.readdir("./mp3/tracks", function (err, files) {
+
+        var audioTracks = getAudioTracks(files, 0, files.length);
+        res.send(JSON.stringify(audioTracks));
+    });
 
 }
 
@@ -243,16 +252,17 @@ function streamFile(filePath, res) {
  * as expected by learning module. If data is present obj is kept unchanged
  * @param audioFeatures
  */
-function initAudioFeaturesIfEmpty(audioFeatures){
-    if(audioFeatures.data[0].values.length==1){
+function initAudioFeaturesIfEmpty(audioFeatures) {
 
-        var attributes=audioFeatures.header.attributes;
+    if (audioFeatures.data[0].values.length == 1) {
 
+        audioFeatures.header.attributes = dummyAudioFeatures.header.attributes;
         //1 because 0 is always avaliable as file name
-        for(var i=1;i<attributes.length;i++){
+        for (var i = 1; i < audioFeatures.header.attributes.length; i++) {
             audioFeatures.data[0].values.push('?');
         }
-    }else{
+
+    } else {
         return audioFeatures;
     }
 

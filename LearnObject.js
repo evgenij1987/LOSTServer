@@ -9,11 +9,8 @@
  */
 
 // Constructor
-function LearnObject(user, audioFeatures, contextFeatures) {
+function LearnObject(user, feedback,audioFeatures, contextFeatures) {
     // always initialize all instance properties
-
-
-
 
     var concatenatedAttributes= audioFeatures.header.attributes.concat(contextFeatures.header.attributes);
     var concatenatedData=audioFeatures.data;
@@ -21,6 +18,7 @@ function LearnObject(user, audioFeatures, contextFeatures) {
 
 
     this.user=user;
+    this.feedback=feedback;
     this.toLearn={
         header:{
             relation: 'instance',
