@@ -30,7 +30,7 @@ app.get('/api/play/:id', mainController.playAudioTrack);
 app.post('/api/learn',mainController.learnFromSongAndContext);
 
 //API to stream audio file selected by ML lib
-app.get('/api/list/next',mainController.listRecommendedAudioTracks);
+app.post('/api/list/next',mainController.listRecommendedAudioTracks);
 
 
 var server = app.listen(PORT, function () {
