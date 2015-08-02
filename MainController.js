@@ -160,8 +160,8 @@ exports.listRecommendedAudioTracks = function (req, res) {
     //just to be conform the data type expected by ml module
     insertFileIndex(audioFeaturesDummy);
     var recommendationRequestString = JSON.stringify(new RecommendationRequest(user, contextFeatures, audioFeaturesDummy));
-
-
+    recommendationRequestString=recommendationRequestString.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");
+    console.log(recommendationRequestString);
     if (!debugMode) {//PUT REAL COMMAND TO LEARNING LIB IN THIS STRING
         getRecommendedItemsCommand = "real commmand comes here!";
     }
@@ -182,7 +182,7 @@ exports.listRecommendedAudioTracks = function (req, res) {
  */
 function handleRecommendation(data, res) {
     var recommendation = JSON.parse(data);
-    console.log(JSON.stringify(recommendation));
+    //console.log(JSON.stringify(recommendation));
     //SEND RECOMMENDATIONS INSTEAD HERE
     fs.readdir("./mp3/tracks", function (err, files) {
 
