@@ -296,7 +296,13 @@ var isUnixHiddenPath = function (path) {
 function clone(a) {
     return JSON.parse(JSON.stringify(a));
 }
-
+/**
+ * Helper method to add file index
+ * When api/learn is called we receive the index
+ * When apu/list/next is called we pass the index to ml module
+ * @param audioFeatures
+ * @param playedFileIndex
+ */
 function insertFileIndex(audioFeatures, playedFileIndex) {
     audioFeatures.header.attributes.unshift({
         "weight": 1,
