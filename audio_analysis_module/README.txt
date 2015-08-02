@@ -8,7 +8,7 @@ C:\RWTH\AndroidLab\xml\mp3 settings.xml C:\RWTH\AndroidLab\xml
 
 To run it on a real machine (linux ;-)
 
-sudo java -jar lostextract.jar ../mp3 settings.xml ../audio_features/ features.xml
+sudo java -jar lostextract.jar ../mp3/tracks settings.xml ../audio_features/ features.xml
 
 
 It might be necessery to rename some files before running analysis, use bash command:

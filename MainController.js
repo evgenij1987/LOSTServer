@@ -3,8 +3,9 @@
  */
 AudioTrack = require('./AudioTrack'),
     fs = require('fs'),
-    path = require('path');
-LearnObject = require('./LearnObject');
+    path = require('path'),
+    LearnObject = require('./LearnObject'),
+    RecommendationRequest = require('./RecommendationRequest');
 
 var dummyAudioFeatures = require('./audio_analysis_module/dummyAudioFeatures.json');
 var wekaMLProcess;
@@ -105,29 +106,38 @@ exports.learnFromSongAndContext = function (req, res) {
         var jsonFileName = files[playedFileIndex];
         jsonFeaturesFilePath = path.join(__dirname, 'audio_features/json/' + jsonFileName);
 
-        //load json file, done same way as loading javascript
-        var audioFeatures = require(jsonFeaturesFilePath);
 
-        initAudioFeaturesIfEmpty(audioFeatures);
-        learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures));
-        //console.log(learnCommand+"\n \n \n");
-        //Replace 1 by 1.0 as expected by learning module
+        fs.readFile(jsonFeaturesFilePath, 'utf8', function (err, data) {
 
-        learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
-        writeToWekaMLProcess(learnCommand,
-            function (lernresponse) {
+            if (err)
+                res.status(500).send(err);
 
-                console.log(lernresponse.toString("utf-8"));
-                res.sendStatus(200);
+            var audioFeatures = JSON.parse(data);
 
-            }, function (error) {
+            initAudioFeaturesIfEmpty(audioFeatures, playedFileIndex);
 
-                console.log('err data: ' + error);
+            learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures));
+            //console.log(learnCommand+"\n \n \n");
+            //Replace 1 by 1.0 as expected by learning module
 
-            }
-        );
+            learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
+            writeToWekaMLProcess(learnCommand,
+                function (lernresponse) {
 
-    })
+                    console.log(lernresponse.toString("utf-8"));
+                    res.sendStatus(200);
+
+                }, function (error) {
+
+                    console.log('err data: ' + error);
+
+                }
+            );
+
+        })
+
+
+    });
 
 
 }
@@ -144,14 +154,19 @@ exports.listRecommendedAudioTracks = function (req, res) {
     var contextFeatures = req.body.context;
     var user = req.body.user;
 
-    var getRecommendedItemsCommand = JSON.stringify("list recommended");
+
+    var audioFeaturesDummy = clone(dummyAudioFeatures);//we don't want to change it
+
+    //just to be conform the data type expected by ml module
+    insertFileIndex(audioFeaturesDummy);
+    var recommendationRequestString = JSON.stringify(new RecommendationRequest(user, contextFeatures, audioFeaturesDummy));
 
 
     if (!debugMode) {//PUT REAL COMMAND TO LEARNING LIB IN THIS STRING
         getRecommendedItemsCommand = "real commmand comes here!";
     }
 
-    writeToWekaMLProcess(getRecommendedItemsCommand,
+    writeToWekaMLProcess(recommendationRequestString,
         function (data) {
             handleRecommendation(data, res)
         },
@@ -167,7 +182,7 @@ exports.listRecommendedAudioTracks = function (req, res) {
  */
 function handleRecommendation(data, res) {
     var recommendation = JSON.parse(data);
-
+    console.log(JSON.stringify(recommendation));
     //SEND RECOMMENDATIONS INSTEAD HERE
     fs.readdir("./mp3/tracks", function (err, files) {
 
@@ -247,25 +262,26 @@ function streamFile(filePath, res) {
     });
 
 }
+
 /**
  * For some mp3 files analysis is not possible, fill ? for instead of real numbers
  * as expected by learning module. If data is present obj is kept unchanged
  * @param audioFeatures
  */
-function initAudioFeaturesIfEmpty(audioFeatures) {
-
+function initAudioFeaturesIfEmpty(audioFeatures, playedFileIndex) {
+    var audioFeaturesDummy = clone(dummyAudioFeatures);
     if (audioFeatures.data[0].values.length == 1) {
 
-        audioFeatures.header.attributes = dummyAudioFeatures.header.attributes;
+        audioFeatures.header.attributes = audioFeaturesDummy.header.attributes;
         //1 because 0 is always avaliable as file name
         for (var i = 1; i < audioFeatures.header.attributes.length; i++) {
             audioFeatures.data[0].values.push('?');
         }
 
-    } else {
-        return audioFeatures;
     }
 
+    //append fileIndex to audioFeatures too, so you dont need to qery file system, by allready getting this back from ML module
+    insertFileIndex(audioFeatures, playedFileIndex);
 }
 
 /**
@@ -276,3 +292,20 @@ function initAudioFeaturesIfEmpty(audioFeatures) {
 var isUnixHiddenPath = function (path) {
     return (/(^|.\/)\.+[^\/\.]/g).test(path);
 };
+
+function clone(a) {
+    return JSON.parse(JSON.stringify(a));
+}
+
+function insertFileIndex(audioFeatures, playedFileIndex) {
+    audioFeatures.header.attributes.unshift({
+        "weight": 1,
+        "name": "index",
+        "class": false,
+        "type": "string"
+    });
+    if (playedFileIndex)
+        audioFeatures.data[0].values.unshift(playedFileIndex);
+    else
+        audioFeatures.data[0].values.unshift("?");
+}
