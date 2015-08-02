@@ -1,0 +1,32 @@
+Generate data: 
+java -jar DataGenerator.jar <number of elements> <file destination> learn|recommend
+learn generates elements without missing values, recommend with missing music features
+
+
+Learn from elements:
+one call: with java -jar Learn.jar <element(s) in JSON format>
+loop: java -jar Learn.jar
+      enter elements in JSON format via stdin
+
+
+Recommend with context:
+one call: with java -jar Recommend.jar <context element(s) in JSON format>
+loop: java -jar Recommend.jar
+      enter context element(s) in JSON format via stdin
+
+
+
+The attributes "index" and "filename" are nominal attributes since the learning phase and recommendation are then easier to handle. 
+Thus, we have to send all possible values as labels in the attribute description. A small Java script to get all available songs:
+
+private static void getClassLabels() {
+        List<String> titles = new ArrayList<String>();
+        File folder = new File(<directory holding songs>);
+        File[] listOfFiles = folder.listFiles();
+
+        if(listOfFiles != null) {
+            for (File f : listOfFiles) {
+                if (f.isFile()) {titles.add(f.getName()); }
+            }
+        }
+}
