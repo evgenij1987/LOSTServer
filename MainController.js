@@ -10,7 +10,7 @@ AudioTrack = require('./AudioTrack'),
 var dummyAudioFeatures = require('./audio_analysis_module/dummyAudioFeatures.json');
 var wekaMLProcess;
 var debugMode = true;
-const ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP = /(:\s*)1(\s*}|,)/g;
+//const ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP = /(:\s*)1(\s*}|,)/g;
 
 
 exports.init = function (mode) {
@@ -120,7 +120,7 @@ exports.learnFromSongAndContext = function (req, res) {
             //console.log(learnCommand+"\n \n \n");
             //Replace 1 by 1.0 as expected by learning module
 
-            learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
+            //learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
             writeToWekaMLProcess(learnCommand,
                 function (lernresponse) {
 
@@ -154,13 +154,14 @@ exports.listRecommendedAudioTracks = function (req, res) {
     var contextFeatures = req.body.context;
     var user = req.body.user;
 
-
+    console.log(JSON.stringify(contextFeatures));
     var audioFeaturesDummy = clone(dummyAudioFeatures);//we don't want to change it
 
     //just to be conform the data type expected by ml module
     insertFileIndex(audioFeaturesDummy);
     var recommendationRequestString = JSON.stringify(new RecommendationRequest(user, contextFeatures, audioFeaturesDummy));
-    recommendationRequestString=recommendationRequestString.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");
+    recommendationRequestString=removeSlashes(recommendationRequestString);
+
     console.log(recommendationRequestString);
     if (!debugMode) {//PUT REAL COMMAND TO LEARNING LIB IN THIS STRING
         getRecommendedItemsCommand = "real commmand comes here!";
@@ -186,7 +187,7 @@ function handleRecommendation(data, res) {
     //SEND RECOMMENDATIONS INSTEAD HERE
     fs.readdir("./mp3/tracks", function (err, files) {
 
-        var audioTracks = getAudioTracks(files, 0, 10);
+        var audioTracks = getAudioTracks(files, 0, files.length);
         res.send(JSON.stringify(audioTracks));
     });
 
@@ -314,4 +315,11 @@ function insertFileIndex(audioFeatures, playedFileIndex) {
         audioFeatures.data[0].values.unshift(playedFileIndex);
     else
         audioFeatures.data[0].values.unshift("?");
+}
+
+
+function removeSlashes(jsonString){
+    var replaced=jsonString.replace(/"weight":1/g,"\"weight\":1.0");
+    replaced=replaced.replace(/"\//g, "").replace(/\/"/g, "");
+    return replaced;
 }
