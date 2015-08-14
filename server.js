@@ -10,7 +10,7 @@ var express = require('express'),
 var PORT = 3000;
 var app = express();
 var mainController=require('./MainController');
-mainController.init(true);
+mainController.init(false);
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
