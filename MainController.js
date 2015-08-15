@@ -8,7 +8,9 @@ AudioTrack = require('./AudioTrack'),
     RecommendationRequest = require('./RecommendationRequest');
 
 var dummyAudioFeatures = require('./audio_analysis_module/dummyAudioFeatures.json');
-var wekaMLProcess;
+var learnProcess;
+var recommendationProcess;
+var catProcess;
 var debugMode = true;
 //const ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP = /(:\s*)1(\s*}|,)/g;
 
@@ -16,7 +18,11 @@ var debugMode = true;
 exports.init = function (mode) {
 
     debugMode = mode;
-    wekaMLProcess = runMLProcess();
+    discardCorruptedFiles();
+    //var pathJar =path.join(__dirname, );
+    learnProcess = runProcess('mlmodule/Learn.jar');//
+    //catProcess=runProcess("cat");
+    //recommendationProcess = runProcess('mlmodule/Recommend.jar');
 
 };
 
@@ -93,7 +99,10 @@ exports.playAudioTrack = function (req, res) {
  */
 exports.learnFromSongAndContext = function (req, res) {
 
-    var learnCommand = "Learn this!";
+
+    var learnRequest = JSON.stringify(req.body);
+    console.log(learnRequest);
+    var learnCommand;
 
     var contextFeatures = req.body.context;
     var playedFileIndex = req.body.fileIndex;
@@ -113,26 +122,30 @@ exports.learnFromSongAndContext = function (req, res) {
                 res.status(500).send(err);
 
             var audioFeatures = JSON.parse(data);
+            fs.readdir("./mp3/tracks", function (err, mp3Files) {
 
-            initAudioFeaturesIfEmpty(audioFeatures, playedFileIndex);
 
-            learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures));
-            //console.log(learnCommand+"\n \n \n");
-            //Replace 1 by 1.0 as expected by learning module
+                learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures, playedFileIndex,mp3Files));
+                //console.log(learnCommand+"\n \n \n");
+                //Replace 1 by 1.0 as expected by learning module
+                learnCommand = removeEscapeCharacters(learnCommand);
+                console.log(learnCommand);
+                writeToProcess(learnProcess, learnCommand,
+                    function (lernresponse) {
 
-            //learnCommand = learnCommand.replace(ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP, "$11.0$2");//1.0 in between variables $1 and $2
-            writeToWekaMLProcess(learnCommand,
-                function (lernresponse) {
+                        console.log(lernresponse.toString("utf-8"));
+                        res.sendStatus(200);
 
-                    console.log(lernresponse.toString("utf-8"));
-                    res.sendStatus(200);
+                    }, function (error) {
 
-                }, function (error) {
+                        console.log('err data: ' + error);
 
-                    console.log('err data: ' + error);
+                    }
+                );
 
-                }
-            );
+            });
+
+
 
         })
 
@@ -151,30 +164,37 @@ exports.learnFromSongAndContext = function (req, res) {
  */
 exports.listRecommendedAudioTracks = function (req, res) {
 
+    var recommendRequest = JSON.stringify(req.body);
+    console.log(recommendRequest);
+
     var contextFeatures = req.body.context;
     var user = req.body.user;
-
     console.log(JSON.stringify(contextFeatures));
     var audioFeaturesDummy = clone(dummyAudioFeatures);//we don't want to change it
 
-    //just to be conform the data type expected by ml module
-    insertFileIndex(audioFeaturesDummy);
-    var recommendationRequestString = JSON.stringify(new RecommendationRequest(user, contextFeatures, audioFeaturesDummy));
-    recommendationRequestString=removeSlashes(recommendationRequestString);
+    fs.readdir("./mp3/tracks", function (err, files) {
 
-    console.log(recommendationRequestString);
-    if (!debugMode) {//PUT REAL COMMAND TO LEARNING LIB IN THIS STRING
-        getRecommendedItemsCommand = "real commmand comes here!";
-    }
 
-    writeToWekaMLProcess(recommendationRequestString,
-        function (data) {
-            handleRecommendation(data, res)
+        var recommendationRequestString = JSON.stringify(new RecommendationRequest(user, contextFeatures, audioFeaturesDummy, files));
+        recommendationRequestString = removeEscapeCharacters(recommendationRequestString);
+
+        console.log(recommendationRequestString);
+
+        /**
+         writeToProcess(recommendationProcess,recommendationRequestString,
+         function (data) {
+            handleRecommendation(data, res);
         },
 
-        function (error) {
+         function (error) {
             console.log('err data: ' + error);
         });
+         +*/
+        handleRecommendation(null, res);
+
+    });
+
+
 }
 
 /**
@@ -199,12 +219,13 @@ function handleRecommendation(data, res) {
  * @param stdoutcallback reponse from lerning lib
  * @param stderrcallback error occured
  */
-function writeToWekaMLProcess(command, stdoutcallback, stderrcallback) {
-    wekaMLProcess.stdout.removeAllListeners('data');
-    wekaMLProcess.stderr.removeAllListeners('data');
-    wekaMLProcess.stdout.on('data', stdoutcallback);
-    wekaMLProcess.stderr.on('data', stderrcallback);
-    wekaMLProcess.stdin.write(command);
+function writeToProcess(process, command, stdoutcallback, stderrcallback) {
+    process.stdout.removeAllListeners('data');
+    process.stderr.removeAllListeners('data');
+    process.stdout.on('data', stdoutcallback);
+    process.stderr.on('data', stderrcallback);
+    process.stdin.write(command);
+    process.stdin.end();
 
 }
 
@@ -213,19 +234,13 @@ function writeToWekaMLProcess(command, stdoutcallback, stderrcallback) {
  * Starts  new ML process, we will communication with it via writeToWekaMLProcess() method
  * @returns {*}
  */
-function runMLProcess() {
+function runProcess(path) {
 
     var spawn = require('child_process').spawn;
 
-    var command = "cat";
-
-    if (!debugMode) {
-        //run binary command
-        command = "./mlmodule/mlmodule.jar";
-    }
-
     //process is started only once here and used via pipe again and again
-    var child = spawn(command, []);
+
+    var child = spawn('java', ['-jar', path]);
     child.stdout.on('data',
         function (buffer) {
             console.log(buffer.toString("utf-8"))
@@ -312,14 +327,40 @@ function insertFileIndex(audioFeatures, playedFileIndex) {
         "type": "string"
     });
     if (playedFileIndex)
-        audioFeatures.data[0].values.unshift(playedFileIndex);
+        audioFeatures.data[0].values.unshift(playedFileIndex + "");
     else
         audioFeatures.data[0].values.unshift("?");
 }
 
 
-function removeSlashes(jsonString){
-    var replaced=jsonString.replace(/"weight":1/g,"\"weight\":1.0");
-    replaced=replaced.replace(/"\//g, "").replace(/\/"/g, "");
+function removeEscapeCharacters(jsonString) {
+    var replaced = jsonString.replace(/"weight":1/g, "\"weight\":1.0");
+    replaced = replaced.replace(/"\//g, "").replace(/\/"/g, "");
     return replaced;
 }
+
+/**
+ * Discards mp3 files, which do not have a corresponding json feature pendant
+ */
+function discardCorruptedFiles() {
+
+    var count = 0;
+    //we don not want the server to respond request as long as not done this job
+    var audioFiles = fs.readdirSync("./mp3/tracks");
+
+    for (var i = 0; i < audioFiles.length; i++) {
+
+        var jsonFile = audioFiles[i].replace('.mp3', '.json');
+        var jsonFilePath = path.join(__dirname, 'audio_features/json/' + jsonFile);
+        if (!fs.existsSync(jsonFilePath)) {
+            var mp3FilePath = path.join(__dirname, 'mp3/tracks/' + audioFiles[i]);
+            fs.unlinkSync(mp3FilePath);
+            count++;
+        }
+    }
+    console.log("Removed: " + count + " audio files (unanalysed)");
+
+
+}
+
+
