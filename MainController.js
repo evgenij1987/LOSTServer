@@ -22,7 +22,7 @@ exports.init = function (mode) {
     //var pathJar =path.join(__dirname, );
     learnProcess = runProcess('mlmodule/Learn.jar');//
     //catProcess=runProcess("cat");
-    //recommendationProcess = runProcess('mlmodule/Recommend.jar');
+    recommendationProcess = runProcess('mlmodule/Recommend.jar');
 
 };
 
@@ -125,26 +125,27 @@ exports.learnFromSongAndContext = function (req, res) {
             fs.readdir("./mp3/tracks", function (err, mp3Files) {
 
 
-                learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures, playedFileIndex,mp3Files));
+                learnCommand = JSON.stringify(new LearnObject(user, feedBack, audioFeatures, contextFeatures, playedFileIndex, mp3Files));
                 //console.log(learnCommand+"\n \n \n");
                 //Replace 1 by 1.0 as expected by learning module
                 learnCommand = removeEscapeCharacters(learnCommand);
                 console.log(learnCommand);
                 writeToProcess(learnProcess, learnCommand,
                     function (lernresponse) {
-
+                        learnProcess.stdout.removeAllListeners('data');
                         console.log(lernresponse.toString("utf-8"));
+
                         res.sendStatus(200);
 
-                    }, function (error) {
 
+                    }, function (error) {
+                        learnProcess.stderr.removeAllListeners('data');
                         console.log('err data: ' + error);
 
                     }
                 );
 
             });
-
 
 
         })
@@ -180,17 +181,20 @@ exports.listRecommendedAudioTracks = function (req, res) {
 
         console.log(recommendationRequestString);
 
-        /**
-         writeToProcess(recommendationProcess,recommendationRequestString,
-         function (data) {
-            handleRecommendation(data, res);
-        },
 
-         function (error) {
-            console.log('err data: ' + error);
-        });
-         +*/
-        handleRecommendation(null, res);
+        writeToProcess(recommendationProcess, recommendationRequestString,
+            function (data) {
+                recommendationProcess.stdout.removeAllListeners('data');
+                handleRecommendation(data, res);
+            },
+
+            function (error) {
+
+                recommendationProcess.stderr.removeAllListeners('data');
+                console.log('err data: ' + error);
+            });
+
+        //handleRecommendation(null, res);
 
     });
 
@@ -220,12 +224,16 @@ function handleRecommendation(data, res) {
  * @param stderrcallback error occured
  */
 function writeToProcess(process, command, stdoutcallback, stderrcallback) {
+
     process.stdout.removeAllListeners('data');
     process.stderr.removeAllListeners('data');
     process.stdout.on('data', stdoutcallback);
     process.stderr.on('data', stderrcallback);
-    process.stdin.write(command);
-    process.stdin.end();
+
+    process.stdin.write(command + "\n");//crucial separation between multiple requests, since readLine() is used in the jar
+    //process.stdin.end();
+    //process.stdin.resume();
+
 
 }
 
@@ -336,6 +344,7 @@ function insertFileIndex(audioFeatures, playedFileIndex) {
 function removeEscapeCharacters(jsonString) {
     var replaced = jsonString.replace(/"weight":1/g, "\"weight\":1.0");
     replaced = replaced.replace(/"\//g, "").replace(/\/"/g, "");
+    replaced = replaced.replace(/'/g, "x");
     return replaced;
 }
 
