@@ -182,7 +182,7 @@ exports.listRecommendedAudioTracks = function (req, res) {
         console.log(recommendationRequestString);
 
 
-        fs.exists('./learning_data/model', function (exists) {
+        fs.exists('./learning_data/model/'+user.userid+".model", function (exists) {
             if (exists) {
                 writeToProcess(recommendationProcess, recommendationRequestString,
                     function (data) {
