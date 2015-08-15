@@ -32,7 +32,7 @@ public class Learn {
                     if (input.equals("generate")) {
                         // for quick testing
                         input = DataGenerator.generateLearnData(100, false);
-                        DataGenerator.saveToFile(input, "../test.json", false);
+                        
                     }
 
                     obj = new JsonParser().parse(input).getAsJsonObject();

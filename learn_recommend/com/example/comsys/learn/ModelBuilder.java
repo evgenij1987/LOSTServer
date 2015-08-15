@@ -208,12 +208,12 @@ public class ModelBuilder
 
 			double[] instanceValue = new double[instances.numAttributes()];
 			for(int j = 0; j < i.numAttributes(); j++) {
-				// Nominal attributes
-				//if(j != 27)
+				// Nominal and numeric attributes
+				if(j != 0)
 					instanceValue[j] = i.value(j);
 				// String attributes
-				//else
-				//	instanceValue[j] = instances.attribute(j).addStringValue(i.stringValue(j));
+				else
+					instanceValue[j] = instances.attribute(j).addStringValue(i.stringValue(j));
 
 			}
 			instances.add(new DenseInstance(1.0, instanceValue));

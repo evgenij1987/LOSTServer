@@ -138,10 +138,10 @@ public class DataGenerator {
                 String data;
                 
                 if(args[2].equals("learn")) {
-                	data = generateLearnData(Integer.parseInt(args[0]), true);
+                	data = generateLearnData(Integer.parseInt(args[0]), false);
                 }
                 else {
-                	data = generateRecommendationData(Integer.parseInt(args[0]), true);
+                	data = generateRecommendationData(Integer.parseInt(args[0]), false);
         		}
         
                 try {
@@ -191,13 +191,11 @@ public class DataGenerator {
                         "'relation' : 'instance', " +
                         "'attributes' : [{" +
                         "'name' : 'songname'," +
-                        "'type' : 'nominal'," +
+                        "'type' : 'string'," +
                         "'class' : false," +
-                        "'weight' : 1.0," +
-                        "'labels' : [''";
+                        "'weight' : 1.0";
 
-                s +=    "]" +
-                        "}, {" +
+                s +=    "}, {" +
                         "'name' : 'index'," +
                         "'type' : 'nominal'," +
                         "'class' : false," +
