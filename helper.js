@@ -8,10 +8,10 @@ exports.insertFileIndex=function (audioFeatures, playedFileIndex) {
         "class": false,
         "type": "string"
     });
-    //if (!isNaN(playedFileIndex))
-      //  audioFeatures.data[0].values.unshift(playedFileIndex+"");
-    //else
-    audioFeatures.data[0].values.unshift("?");
+    if((playedFileIndex))
+        audioFeatures.data[0].values.unshift(playedFileIndex+"");
+    else
+        audioFeatures.data[0].values.unshift("?");
 }
 
 exports.insertLables=function(audioFeatures,files){

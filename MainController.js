@@ -15,14 +15,14 @@ var debugMode = true;
 //const ONES_WITHOUT_DECIMAL_DELIMITER_REG_EXP = /(:\s*)1(\s*}|,)/g;
 
 
-exports.init = function (mode) {
+exports.init = function () {
 
-    debugMode = mode;
+
     discardCorruptedFiles();
-    //var pathJar =path.join(__dirname, );
-    learnProcess = runProcess('mlmodule/Learn.jar');//
+    var pathJar = path.join(__dirname, './mlmodule');
+    learnProcess = runProcess('Learn.jar', pathJar);//
     //catProcess=runProcess("cat");
-    recommendationProcess = runProcess('mlmodule/Recommend.jar');
+    recommendationProcess = runProcess('Recommend.jar', pathJar);
 
 };
 
@@ -211,8 +211,18 @@ function handleRecommendation(data, res) {
     //SEND RECOMMENDATIONS INSTEAD HERE
     fs.readdir("./mp3/tracks", function (err, files) {
 
-        var audioTracks = getAudioTracks(files, 0, files.length);
-        res.send(JSON.stringify(audioTracks));
+        //var audioTracks = getAudioTracks(files, 0, files.length);
+        var recommendedTracks = new Array();
+
+        for (var i = 0; i < recommendation.songs.length; i++) {
+            var fileName = recommendation.songs[i].fileindex;
+
+            recommendedTracks.push(new AudioTrack(fileName, files.indexOf(fileName)));
+        }
+
+        res.send(JSON.stringify(recommendedTracks));
+
+
     });
 
 }
@@ -242,13 +252,13 @@ function writeToProcess(process, command, stdoutcallback, stderrcallback) {
  * Starts  new ML process, we will communication with it via writeToWekaMLProcess() method
  * @returns {*}
  */
-function runProcess(path) {
+function runProcess(binary, path) {
 
     var spawn = require('child_process').spawn;
 
     //process is started only once here and used via pipe again and again
 
-    var child = spawn('java', ['-jar', path]);
+    var child = spawn('java', ['-jar', binary], {cwd: path});
     child.stdout.on('data',
         function (buffer) {
             console.log(buffer.toString("utf-8"))
@@ -344,7 +354,7 @@ function insertFileIndex(audioFeatures, playedFileIndex) {
 function removeEscapeCharacters(jsonString) {
     var replaced = jsonString.replace(/"weight":1/g, "\"weight\":1.0");
     replaced = replaced.replace(/"\//g, "").replace(/\/"/g, "");
-    replaced = replaced.replace(/'/g, "x");
+
     return replaced;
 }
 
