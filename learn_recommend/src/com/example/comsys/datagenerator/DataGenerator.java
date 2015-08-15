@@ -3,6 +3,7 @@ package com.example.comsys.datagenerator;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -480,13 +481,13 @@ public class DataGenerator {
                         "]" +
                         "}, " +
                         "'data' : " +
-                        generateInstances(n,missingValues) +
+                        generateInstances(n,missingValues,!sample) +
                         "}";
 
                 return s;
         }
 
-    private static String generateInstances(int n, boolean missingValues) {
+    private static String generateInstances(int n, boolean missingValues, boolean fromDirectory) {
         String s = "[";
 
         for (int i = 0; i < n; i++) {
@@ -498,7 +499,7 @@ public class DataGenerator {
             } else {
                 // music features
                 s += "'', ";
-                s += addTitle() + ", ";
+                s += addTitle(fromDirectory) + ", ";
                 s += addMusicFeatures() + ", ";
                 
                 // don't need that right now because music features should be the same for a certain title
@@ -577,8 +578,12 @@ public class DataGenerator {
     }
 
         private static void getClassLabels() {
-                File folder = new File("res/mp3");
-                File[] listOfFiles = folder.listFiles();
+                File folder = new File("../mp3/tracks");
+                File[] listOfFiles = folder.listFiles(new FilenameFilter() {
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(".mp3");
+                    }
+                });
 
                 if(listOfFiles != null) {
                         for (File f : listOfFiles) {
@@ -592,7 +597,7 @@ public class DataGenerator {
                 if(sample)
                         t = titles;
                 else {
-                        getClassLabels();
+                        if(titles2.size() == 0) {getClassLabels();}
                         t = titles2.toArray(new String[0]);
                 }
                 String s = "";
@@ -639,9 +644,14 @@ public class DataGenerator {
                 return format.format(number);
         }
 
-        private static String addTitle() {
-                titleNumber = new Random().nextInt(titles.length);
-                return "'" + titles[titleNumber] + "'";
+        private static String addTitle(boolean fromDirectory) {
+        	if(fromDirectory) {
+        		titleNumber = new Random().nextInt(titles2.size());
+                return "'" + titles2.get(titleNumber) + "'";
+        	} else {
+        		titleNumber = new Random().nextInt(titles.length);
+        		return "'" + titles[titleNumber] + "'";
+        	}
         }
 
         private static String addMusicFeatures() {

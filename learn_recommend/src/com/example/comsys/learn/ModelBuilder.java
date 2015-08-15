@@ -192,7 +192,8 @@ public class ModelBuilder
 		} else {
 			// First use for user
 			// Load header/attributes
-			String s = DataGenerator.generateData(0,false,true);
+			String s = DataGenerator.generateData(0, false, false);
+			
 			// Replace single quotation marks (syntax error)
 			s = s.replace("\'", "\"");
 

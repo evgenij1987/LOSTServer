@@ -23,6 +23,8 @@ import weka.core.converters.JSONLoader;
  */
 public class Recommend {
 
+	static String dir = "../learning_data/";
+	
     // Load instances to be classified
     public static void main(String[] args) {
 
@@ -43,7 +45,7 @@ public class Recommend {
 	
                     if(input.equals("generate")) {
                         // for quick testing
-                    	input = DataGenerator.generateRecommendationData(100, true);
+                    	input = DataGenerator.generateRecommendationData(100, false);
                     }
 
                     obj = new JsonParser().parse(input).getAsJsonObject();
@@ -74,13 +76,13 @@ public class Recommend {
 
     private static void runRecommendationPhase(String userID, String data) throws Exception{
         String s = "";
-        InstanceClassifier ic = new InstanceClassifier("res/model/" + userID + ".model");
+        InstanceClassifier ic = new InstanceClassifier(dir + "model/" + userID + ".model");
         Instances instances;
 
 
         // Load instances
         instances = ModelBuilder.loadNewInstances(data);
-        instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");	// remove song name from classification
+        instances = Weka_ManageInstances.attributeSelection(instances, "1");	// remove song name from classification
 
         // convert string to nonimal attributes because classifier (Random Forest) can only handle numeric and nominal data
         //instances = Weka_ManageInstances.convertStringAttributes(instances, "27");
@@ -121,6 +123,7 @@ public class Recommend {
             s = ic.getInstanceClass(i, t);
             System.out.println(s+"\n");
 
+            /********** Debugging/Testing ****************/
             // Check if one of top 5 labels is correct
         /*    for(int j = 0; j < 5; j++) {
             	JsonObject obj = new JsonParser().parse(s).getAsJsonObject();
