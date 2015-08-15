@@ -182,17 +182,25 @@ exports.listRecommendedAudioTracks = function (req, res) {
         console.log(recommendationRequestString);
 
 
-        writeToProcess(recommendationProcess, recommendationRequestString,
-            function (data) {
-                recommendationProcess.stdout.removeAllListeners('data');
-                handleRecommendation(data, res);
-            },
+        fs.exists('./learning_data/model', function (exists) {
+            if (exists) {
+                writeToProcess(recommendationProcess, recommendationRequestString,
+                    function (data) {
+                        recommendationProcess.stdout.removeAllListeners('data');
+                        handleRecommendation(data, res);
+                    },
 
-            function (error) {
+                    function (error) {
 
-                recommendationProcess.stderr.removeAllListeners('data');
-                console.log('err data: ' + error);
-            });
+                        recommendationProcess.stderr.removeAllListeners('data');
+                        console.log('err data: ' + error);
+                    });
+            }else{
+                var audioTracks = getAudioTracks(files, 0, files.length);
+                res.send(JSON.stringify(audioTracks));
+            }
+        });
+
 
         //handleRecommendation(null, res);
 

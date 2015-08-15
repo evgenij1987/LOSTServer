@@ -2,17 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8acc5df6-50b7-442a-89f6-15e898921cc7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/audio_features/json/keane_everybody's changing.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mlmodule/input.jar" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/01. Avril Lavigne Losing Grip.json" afterPath="$PROJECT_DIR$/audio_features/json/01. Avril Lavigne Losing Grip.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/02. Avril Lavigne Complicated.json" afterPath="$PROJECT_DIR$/audio_features/json/02. Avril Lavigne Complicated.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/03. Sia - Day too soon.json" afterPath="$PROJECT_DIR$/audio_features/json/03. Sia - Day too soon.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/3 Doors Down - 03 - Let Me Go.json" afterPath="$PROJECT_DIR$/audio_features/json/3 Doors Down - 03 - Let Me Go.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/LeAnn_Rimes_-_13_-_Please_Remember[mp3lemon.net].json" afterPath="$PROJECT_DIR$/audio_features/json/LeAnn_Rimes_-_13_-_Please_Remember[mp3lemon.net].json" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/learning_data/51dc3df5aa8b418d.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/learning_data/model/51dc3df5aa8b418d.model" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/audio_features/.gitignore" afterPath="$PROJECT_DIR$/learning_data/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MainController.js" afterPath="$PROJECT_DIR$/MainController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helper.js" afterPath="$PROJECT_DIR$/helper.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/audio_features/json/keane_is it any wonder.json" afterPath="$PROJECT_DIR$/audio_features/json/keane_is it any wonder.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LOSTServer.iws" />
@@ -34,14 +28,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MainController.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainController.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MainController.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.091969">
-              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="225" column="12" selection-start-line="225" selection-start-column="12" selection-end-line="225" selection-end-column="12" />
               <folding>
                 <element signature="e#0#49#0" expanded="false" />
-                <element signature="e#9208#9257#0" expanded="false" />
+                <element signature="e#9544#9593#0" expanded="false" />
                 <element signature="n#!!block;n#clone#0" expanded="false" />
               </folding>
             </state>
@@ -78,14 +72,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LearnObject.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="LearnObject.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LearnObject.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="0.27522936">
               <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
               <folding>
                 <element signature="e#50#99#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/learning_data/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.6666666">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -106,7 +110,7 @@
         <entry file="file://$PROJECT_DIR$/helper.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+              <caret line="13" column="50" selection-start-line="13" selection-start-column="50" selection-end-line="13" selection-end-column="50" />
               <folding>
                 <element signature="e#0#49#0" expanded="false" />
               </folding>
@@ -118,7 +122,7 @@
         <entry file="file://$PROJECT_DIR$/server.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
               <folding>
                 <element signature="e#0#49#0" expanded="false" />
               </folding>
@@ -152,9 +156,9 @@
         <option value="$PROJECT_DIR$/audio_analysis_module/dummyAudioFeatures.json" />
         <option value="$PROJECT_DIR$/LearnObject.js" />
         <option value="$PROJECT_DIR$/RecommendationRequest.js" />
-        <option value="$PROJECT_DIR$/helper.js" />
-        <option value="$PROJECT_DIR$/MainController.js" />
         <option value="$PROJECT_DIR$/server.js" />
+        <option value="$PROJECT_DIR$/MainController.js" />
+        <option value="$PROJECT_DIR$/helper.js" />
       </list>
     </option>
   </component>
@@ -269,7 +273,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="audio_features" />
+              <option name="myItemId" value="learning_data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -312,11 +316,11 @@
       <recent name="$PROJECT_DIR$/mp3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/learning_data" />
       <recent name="$PROJECT_DIR$/mp3/tracks" />
       <recent name="$PROJECT_DIR$/audio_analysis_module" />
       <recent name="$PROJECT_DIR$/mp3" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/audio_features" />
     </key>
   </component>
   <component name="RunManager" selected="Node.js.server.js">
@@ -389,12 +393,12 @@
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.06868452" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.06868452" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32053626" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.073341094" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3337223" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43189755" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3329453" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32922733" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -431,27 +435,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>242</line>
+          <line>250</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>306</line>
+          <line>314</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>308</line>
+          <line>316</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>318</line>
+          <line>326</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>208</line>
+          <line>216</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -466,22 +470,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>365</line>
+          <line>373</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>267</line>
+          <line>275</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>260</line>
+          <line>268</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>259</line>
+          <line>267</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -491,7 +495,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>263</line>
+          <line>271</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -520,16 +524,6 @@
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>187</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>193</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/LearnObject.js</url>
           <line>14</line>
           <option name="timeStamp" value="55" />
@@ -546,7 +540,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/MainController.js</url>
-          <line>217</line>
+          <line>225</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
@@ -630,7 +624,7 @@
           <caret line="140" column="52" selection-start-line="140" selection-start-column="52" selection-end-line="140" selection-end-column="52" />
           <folding>
             <element signature="e#0#49#0" expanded="false" />
-            <element signature="e#9208#9257#0" expanded="false" />
+            <element signature="e#9544#9593#0" expanded="false" />
             <element signature="n#!!block;n#clone#0" expanded="false" />
           </folding>
         </state>
@@ -695,7 +689,7 @@
           <caret line="140" column="52" selection-start-line="140" selection-start-column="52" selection-end-line="140" selection-end-column="52" />
           <folding>
             <element signature="e#0#49#0" expanded="false" />
-            <element signature="e#9208#9257#0" expanded="false" />
+            <element signature="e#9544#9593#0" expanded="false" />
             <element signature="n#!!block;n#clone#0" expanded="false" />
           </folding>
         </state>
@@ -817,13 +811,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/audio_features/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mp3/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -868,12 +855,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/LearnObject.js">
+    <entry file="file://$USER_HOME$/Library/Caches/WebStorm10/extLibs/nodejs-v0.11.13-src/core-modules-sources/lib/events.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
           <folding>
-            <element signature="e#50#99#0" expanded="false" />
+            <element signature="e#0#49#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -886,11 +881,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Library/Caches/WebStorm10/extLibs/nodejs-v0.11.13-src/core-modules-sources/lib/events.js">
+    <entry file="file://$PROJECT_DIR$/MainController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
-          <folding />
+          <caret line="225" column="12" selection-start-line="225" selection-start-column="12" selection-end-line="225" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#49#0" expanded="false" />
+            <element signature="e#9544#9593#0" expanded="false" />
+            <element signature="n#!!block;n#clone#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="13" column="50" selection-start-line="13" selection-start-column="50" selection-end-line="13" selection-end-column="50" />
+          <folding>
+            <element signature="e#0#49#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -904,34 +913,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helper.js">
+    <entry file="file://$PROJECT_DIR$/learning_data/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="22" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#49#0" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="-1.6666666">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
+    <entry file="file://$PROJECT_DIR$/LearnObject.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.27522936">
+          <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
           <folding>
-            <element signature="e#0#49#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MainController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.091969">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#49#0" expanded="false" />
-            <element signature="e#9208#9257#0" expanded="false" />
-            <element signature="n#!!block;n#clone#0" expanded="false" />
+            <element signature="e#50#99#0" expanded="false" />
           </folding>
         </state>
       </provider>

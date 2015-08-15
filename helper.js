@@ -8,7 +8,7 @@ exports.insertFileIndex=function (audioFeatures, playedFileIndex) {
         "class": false,
         "type": "string"
     });
-    if((playedFileIndex))
+    if((!isNaN(playedFileIndex)))
         audioFeatures.data[0].values.unshift(playedFileIndex+"");
     else
         audioFeatures.data[0].values.unshift("?");
