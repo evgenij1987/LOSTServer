@@ -10,7 +10,8 @@ import java.io.InputStreamReader;
 
 
 public class Learn {
-
+	static String dir = "../learning_data/";
+	
     public static void main(String[] args) {
 
         JsonObject obj;
@@ -30,7 +31,8 @@ public class Learn {
 
                     if (input.equals("generate")) {
                         // for quick testing
-                        input = DataGenerator.generateLearnData(1000, true);
+                        input = DataGenerator.generateLearnData(100, false);
+                        DataGenerator.saveToFile(input, "../test.json", false);
                     }
 
                     obj = new JsonParser().parse(input).getAsJsonObject();
@@ -60,15 +62,15 @@ public class Learn {
 
     private static void runLearningPhase(String userID, String data) throws Exception{
         // Build model (and store it for future use)
-        File f = new File("res/" + userID + ".json");
-        f.delete();
+        //File f = new File(dir + userID + ".json");
+        //f.delete();
 
         // Can decide to keep file with instances and add new ones (for large data sets because generation takes time)
         /*if(Boolean.valueOf(args[0])) { System.out.print(0);*///f.delete(); //}
 
-        ModelBuilder mb = new ModelBuilder("res/" + userID, "res/model/" + userID + ".model", data);
+        ModelBuilder mb = new ModelBuilder("../learning_data/" + userID, dir + "model/" + userID + ".model", data);
         mb.buildModel();
-        mb.evaluate(true);
+        //mb.evaluate(true);
 
         System.out.println("{ \"message\" : \"ok\"}");
     }
