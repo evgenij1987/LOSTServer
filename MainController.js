@@ -196,7 +196,9 @@ exports.listRecommendedAudioTracks = function (req, res) {
                         console.log('err data: ' + error);
                     });
             }else{
-                var audioTracks = getAudioTracks(files, 0, files.length);
+                //only for the case when no learning model exists,
+                //learing model is created after 3 requests to api/learn
+                var audioTracks =getRandomAudioTracks(files, 5);
                 res.send(JSON.stringify(audioTracks));
             }
         });
@@ -391,3 +393,32 @@ function discardCorruptedFiles() {
 }
 
 
+
+function getRandomAudioTracks(files, count){
+    var audioTracks=new Array();
+    var randomIndex;
+    var randomArray=generateNonRepeatingRandomNumbers(0, files.length);
+
+
+    if(files.length<count)
+        count=files.length;
+
+    for(var i=0;i<count;i++){
+        randomIndex=randomArray.pop()
+        audioTracks.push(new AudioTrack(files[randomIndex],randomIndex));
+    }
+    return audioTracks;
+}
+
+function generateNonRepeatingRandomNumbers(from, to){
+    for (var i = from, ar = []; i < to; i++) {
+        ar[i] = i;
+    }
+
+    // randomize the array
+    ar.sort(function () {
+        return Math.random() - 0.5;
+    });
+
+    return ar;
+}
