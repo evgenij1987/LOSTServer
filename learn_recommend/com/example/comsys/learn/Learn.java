@@ -11,12 +11,13 @@ import java.io.InputStreamReader;
 
 public class Learn {
 	static String dir = "../learning_data/";
+
+    static private JsonObject obj;
+    static private String userID;
+    static private String data;
+    static private boolean skipped;
 	
     public static void main(String[] args) {
-
-        JsonObject obj;
-        String userID;
-        String data;
         
         // Read from standard input
         if(args.length < 1) {
@@ -32,14 +33,10 @@ public class Learn {
                     if (input.equals("generate")) {
                         // for quick testing
                         input = DataGenerator.generateLearnData(100, false);
-                        
                     }
 
-                    obj = new JsonParser().parse(input).getAsJsonObject();
-                    userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"","");;
-                    data = obj.getAsJsonObject("toLearn").toString();
-
-                    runLearningPhase(userID, data);
+                    parseJSON(input);
+                    runLearningPhase(userID, data, skipped);
                 }
 
             }catch(Exception io){
@@ -48,19 +45,17 @@ public class Learn {
 
         } else {
             // We got arguments from command line
-            obj = new JsonParser().parse(args[0]).getAsJsonObject();
-            userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"","");
-            data = obj.getAsJsonObject("toLearn").toString();
+            parseJSON(args[0]);
 
             try {
-                runLearningPhase(userID, data);
+                runLearningPhase(userID, data, skipped);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private static void runLearningPhase(String userID, String data) throws Exception{
+    private static void runLearningPhase(String userID, String data, Boolean skipped) throws Exception{
         // Build model (and store it for future use)
         //File f = new File(dir + userID + ".json");
         //f.delete();
@@ -68,10 +63,20 @@ public class Learn {
         // Can decide to keep file with instances and add new ones (for large data sets because generation takes time)
         /*if(Boolean.valueOf(args[0])) { System.out.print(0);*///f.delete(); //}
 
-        ModelBuilder mb = new ModelBuilder("../learning_data/" + userID, dir + "model/" + userID + ".model", data);
-        mb.buildModel();
-        //mb.evaluate(true);
+    	if(!skipped) {
+    		ModelBuilder mb = new ModelBuilder("../learning_data/" + userID, dir + "model/" + userID + ".model", data);
+    		mb.buildModel();
+    		//mb.evaluate(true);
+    	}
 
         System.out.println("{ \"message\" : \"ok\"}");
+    }
+    
+    /** Gets all the necessary information from the JSON input string */
+    private static void parseJSON(String input){
+    	obj = new JsonParser().parse(input).getAsJsonObject();
+        userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"","");
+        data = obj.getAsJsonObject("toLearn").toString();
+        skipped = !Boolean.parseBoolean(obj.get("feedback").toString());
     }
 }
