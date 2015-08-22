@@ -10,6 +10,8 @@ import java.util.TreeMap;
 import json.NearestNeighbourOnJSONResolver;
 import weka.classifiers.Classifier;
 import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.JSONLoader;
 
 /**
  * Created by Alexandra Wörner on 13.07.15.
@@ -19,12 +21,22 @@ public class InstanceClassifier {
     private Classifier classifier;
     private String audioFeaturesPath;
     private int topN = 10;
+    private String lastListenedSong;
 
     public InstanceClassifier(String filepath, String audioFeaturesPath){
 
         try {
+        	this.audioFeaturesPath = audioFeaturesPath;
             classifier = (Classifier) weka.core.SerializationHelper.read(filepath);
-            this.audioFeaturesPath = audioFeaturesPath;
+            
+            // Load saved learning data from JSON file
+            File f = new File(filepath.replace("model/", "").replace(".model",".json"));
+         	JSONLoader loader = new JSONLoader();
+         	loader.setSource(f);
+         	Instances instances = loader.getDataSet();
+         	instances.setClassIndex(1);
+         	lastListenedSong = instances.lastInstance().classAttribute().value((int) instances.lastInstance().classValue());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,10 +56,9 @@ public class InstanceClassifier {
         for(int j = 0; j < probabilities.length; j++) {
             tmap.put(probabilities[j], context.classAttribute().value(j));
         }
-        	
+       
         List<String> combinedTmap = 
-        		combineWithNearestNeighbourSongs(context.classAttribute().value((int) context.classValue()),
-        		new ArrayList<String>(tmap.values()));
+        		combineWithNearestNeighbourSongs(lastListenedSong, new ArrayList<String>(tmap.values()));
 
         return recommendationToJSON(combinedTmap);
     }

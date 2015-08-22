@@ -83,10 +83,7 @@ public class Recommend {
 
         // Load instances
         instances = ModelBuilder.loadNewInstances(context);
-        instances = Weka_ManageInstances.attributeSelection(instances, "1");	// remove song name from classification
-
-        // scale numeric values
-        Weka_ManageInstances.scaleNumericAttributes(instances);
+        instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");	// remove song name and song features for classification
         
         // Set class attribute
         instances.setClassIndex(0);

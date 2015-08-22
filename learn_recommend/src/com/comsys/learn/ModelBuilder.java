@@ -54,13 +54,10 @@ public class ModelBuilder
 		loadData();
 		saveData();			// Save data into file on disk for next iteration
 
-		if(instances.numInstances() < 3) { return; }
+		if(instances.numInstances() < 3) { return; }		// Too few instances to build a model
 		
 		// Remove all music features
 		instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");
-
-		// convert string to nomimal attributes because classifier (Random Forest) can only handle numeric and nominal data
-		//instances = Weka_ManageInstances.convertStringAttributes(instances, "27");
 
 		// scale and discretize numeric values
 		//Weka_ManageInstances.scaleNumericAttributes(instances);
