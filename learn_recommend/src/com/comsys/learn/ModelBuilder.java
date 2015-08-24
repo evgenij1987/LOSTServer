@@ -71,10 +71,10 @@ public class ModelBuilder
 		instances.setClassIndex(0);
 
 		// Build training and test instances
-		double percent = 0.8;
+		double percent = 1.0;
 		String attributes_filter = "";
 
-		testInstances	  = buildInstancesP(instances, attributes_filter, true, percent, 1.0);
+		//testInstances	  = buildInstancesP(instances, attributes_filter, true, percent, 1.0);
 		trainingInstances = buildInstancesP(instances, attributes_filter, true, 0, percent);
 
 		// Build model
