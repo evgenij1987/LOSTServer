@@ -230,6 +230,13 @@ function handleRecommendation(data, res) {
             recommendedTracks.push(new AudioTrack(fileName, files.indexOf(fileName)));
         }
 
+
+        // randomize the array
+        //for demo only to avoid playing same saong again and agains, effect of cold start up
+        recommendedTracks.sort(function () {
+            return Math.random() - 0.5;
+        });
+
         res.send(JSON.stringify(recommendedTracks));
 
 
