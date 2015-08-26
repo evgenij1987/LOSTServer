@@ -15,12 +15,6 @@ import weka.core.converters.JSONLoader;
 import weka.core.converters.JSONSaver;
 
 
-/**
- * <b>Weka_Use is the class to use methods provide by the library Weka.</b>
- * <p>
- * Weka_Use uses different methods of Weka_ManageInstances to filter the extracted data.
- * </p>
- */
 public class ModelBuilder
 {
 	//RandomForest classifier;
@@ -33,6 +27,12 @@ public class ModelBuilder
 	Instances testInstances;
 	Evaluation eval;
 
+	/**
+	 * Constructor
+	 * @param filepath 		Path to contexts on which the model is trained
+	 * @param writepath		Path to the model
+	 * @param newInstances	New context information
+	 */
 	public ModelBuilder(String filepath, String writepath, String newInstances) {
 		this.filepath = filepath;
 		this.writepath = writepath;
@@ -45,8 +45,7 @@ public class ModelBuilder
 	}
 
 	/**
-	 * Builds the model
-	 * 
+	 * Builds the model 
 	 * @throws Exception
 	 */	
 	protected final void buildModel() throws Exception
@@ -57,7 +56,7 @@ public class ModelBuilder
 		if(instances.numInstances() < 3) { return; }		// Too few instances to build a model
 		
 		// Remove all music features
-		instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");
+		//instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");
 
 		// scale and discretize numeric values
 		//Weka_ManageInstances.scaleNumericAttributes(instances);
@@ -72,7 +71,7 @@ public class ModelBuilder
 
 		// Build training and test instances
 		double percent = 1.0;
-		String attributes_filter = "";
+		String attributes_filter = "1,3-21";			// Remove all music features
 
 		//testInstances	  = buildInstancesP(instances, attributes_filter, true, percent, 1.0);
 		trainingInstances = buildInstancesP(instances, attributes_filter, true, 0, percent);
@@ -87,12 +86,12 @@ public class ModelBuilder
 	}
 	
 	/**
-	 * Used to build an Instances from some Percents of an other one.
+	 * Used to build an instance from some percents of an other one.
 	 * It's possible to add a filter on the attributes and choose if the new Instances got or not
 	 * only different following rows.
 	 * 
 	 * @param data
-	 * 				The Instances to extract the new Instances. 
+	 * 				The instances from which part will be extracted
 	 * @param attributes_filter
 	 * 				String which represents the attributes to remove.
 	 * 				<i>"1-4"</i>  | <i>"28"</i>  | <i>"1-70,45,68-72"</i> | <i>""</i> | <i>...</i>
@@ -132,7 +131,7 @@ public class ModelBuilder
 	}
 
 	/**
-	 * Used to train a Random Forest.
+	 * Used to train a Naive Bayes classifier
 	 * 
 	 * @throws Exception
 	 */
@@ -140,15 +139,11 @@ public class ModelBuilder
 	{
 		classifier = new NaiveBayes();
 		classifier.setUseSupervisedDiscretization(true);
-
-		//classifier = new RandomForest();
-		//classifier.setNumFeatures(6);
-		//classifier.setNumTrees(500);
 		classifier.buildClassifier(trainingInstances);
 	}
 	
 	/**
-	 * Used to evaluate an Instances of test and display it.
+	 * Used to evaluate test instances and display it.
 	 * 
 	 * @param displayResults
 	 * 		  Print results to console
@@ -158,12 +153,7 @@ public class ModelBuilder
 	protected void evaluate (boolean displayResults) throws Exception
 	{
 		/*for(Instance i : testInstances) {
-			// Remove music features to evaluate recommendation functionality
-			for (int j = 1; j < 20; j++) {
-				i.setMissing(j);
-			}
-
-			// Alter values (always 100% accuracy)
+			// Alter values
 			/*for (int j = 1; j < 55; j++) {
 				//int n = (int) Math.floor(new Random().nextFloat() * (instances.numAttributes()- 1)) + 1;
 				i.setValue(j, i.value(j) * new Random().nextFloat() );
@@ -177,6 +167,10 @@ public class ModelBuilder
 		if(displayResults) { System.out.println(eval.toSummaryString(true)); }
 	}
 
+	/**
+	 * Loads the old context data and combines it with the new context
+	 * @throws Exception
+	 */
 	private void loadData() throws Exception{
 		File f = new File(filepath + ".json");
 		if(f.exists()) {
@@ -185,7 +179,7 @@ public class ModelBuilder
 			loader.setSource(f);
 			instances = loader.getDataSet();
 		} else {
-			// First use for user
+			// First use of program for the user
 			// Load header/attributes
 			String s = DataGenerator.generateData(0, false, false);
 			
@@ -216,6 +210,10 @@ public class ModelBuilder
 
 	}
 
+	/**
+	 * Saves the context data in a JSON file for future use
+	 * @throws Exception
+	 */
 	private void saveData() throws Exception {
 		JSONSaver saver = new JSONSaver();
 		saver.setInstances(instances);
@@ -228,6 +226,12 @@ public class ModelBuilder
 		}
 	}
 
+	/**
+	 * Loads the new context data sent by the user
+	 * @param newInstances 	The new context data
+	 * @return				Context data in format used by the library
+	 * @throws IOException
+	 */
 	public static Instances loadNewInstances(String newInstances) throws IOException{
 		// Replace single quotation marks (syntax error)
 		newInstances = newInstances.replace("\'", "\"");

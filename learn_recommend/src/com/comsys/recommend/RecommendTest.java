@@ -82,9 +82,6 @@ public class RecommendTest {
         // Load instances
         instances = ModelBuilder.loadNewInstances(data);
         instances = Weka_ManageInstances.attributeSelection(instances, "1");	// remove song name from classification
-
-        // scale numeric values
-        Weka_ManageInstances.scaleNumericAttributes(instances);
         
         // Set class attribute
         instances.setClassIndex(0);

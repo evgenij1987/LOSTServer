@@ -1,14 +1,8 @@
 package com.comsys.learn;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import weka.core.*;
 import weka.filters.*;
-import weka.filters.unsupervised.attribute.NumericToNominal;
-import weka.filters.unsupervised.attribute.PKIDiscretize;
 import weka.filters.unsupervised.attribute.Remove;
-import weka.filters.unsupervised.attribute.StringToNominal;
 
 /**
  * <b>Weka_ManageInstances is the class used to:
@@ -134,7 +128,7 @@ public class Weka_ManageInstances {
 		return true;
 	}
 
-
+/************************************** 
 	public static void scaleNumericAttributes(Instances data) throws Exception
 	{
 		for(int i = 0; i < data.numAttributes(); i++) {
@@ -186,8 +180,6 @@ public class Weka_ManageInstances {
 
 		discretize.setOptions(options);
 		discretize.setInputFormat(data);
-		//System.out.println(discretize.getBins());
-		//discretize.setFindNumBins(true);
 		discretize.setUseEqualFrequency(true);
 
 		Instances newData = Filter.useFilter(data, discretize);
@@ -222,4 +214,6 @@ public class Weka_ManageInstances {
 
 		return newData;
 	}
+	
+	****************************************************/
 }

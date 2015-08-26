@@ -24,6 +24,11 @@ public class InstanceClassifier {
     private int topN = 10;
     private String lastListenedSong;
 
+    /**
+     * Constructor
+     * @param filepath				Path to the model stored for the user
+     * @param audioFeaturesPath		Path to the JSON files containing the music features
+     */
     public InstanceClassifier(String filepath, String audioFeaturesPath){
 
         try {
@@ -36,6 +41,8 @@ public class InstanceClassifier {
          	loader.setSource(f);
          	Instances instances = loader.getDataSet();
          	instances.setClassIndex(1);
+         	
+         	// Song which is compared to the recommended ones to avoid to much of a rift from the previous song(s)
          	lastListenedSong = instances.lastInstance().classAttribute().value((int) instances.lastInstance().classValue());
 
         } catch (Exception e) {
@@ -58,6 +65,7 @@ public class InstanceClassifier {
             tmap.put(probabilities[j], context.classAttribute().value(j));
         }
        
+        // Compare to nearest songs based on music features
         List<String> combinedTmap = 
         		combineWithNearestNeighbourSongs(lastListenedSong, new ArrayList<String>(tmap.values()));
 

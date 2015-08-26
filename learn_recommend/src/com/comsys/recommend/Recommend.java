@@ -24,9 +24,8 @@ public class Recommend {
     // Load instances to be classified
     public static void main(String[] args) {
 
-        JsonObject obj;
-        String userID;
-        String data;
+        String userID = "";
+        String context = "";
 
         // Read from standard input
         if(args.length < 1) {
@@ -44,11 +43,8 @@ public class Recommend {
                     	input = DataGenerator.generateRecommendationData(1, false);
                     }
 
-                    obj = new JsonParser().parse(input).getAsJsonObject();
-                    userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"","");;
-                    data = obj.getAsJsonObject("toRecommend").toString();
-
-                    runRecommendationPhase(userID, data);
+                    getInformationFromJSON(input, userID, context);
+                    runRecommendationPhase(userID, context);
                 }
 
             }catch(Exception io){
@@ -57,12 +53,10 @@ public class Recommend {
 
         } else {
             // We got arguments from command line
-            obj = new JsonParser().parse(args[0]).getAsJsonObject();
-            userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"", "");;
-            data = obj.getAsJsonObject("toRecommend").toString();
+        	getInformationFromJSON(args[0], userID, context);
 
             try {
-                runRecommendationPhase(userID, data);
+                runRecommendationPhase(userID, context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -96,6 +90,18 @@ public class Recommend {
 
         }
        
+    }
+    
+    /**
+     * Extract the information necessary for recommendation from the JSON input
+     * @param input		Information in JSON format
+     * @param userID	Will contain the user's id
+     * @param context	Will contain the context for which the user wants a recommendation
+     */
+    private static void getInformationFromJSON(String input, String userID, String context) {
+        JsonObject obj = new JsonParser().parse(input).getAsJsonObject();
+        userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"", "");;
+        context = obj.getAsJsonObject("toRecommend").toString();
     }
 
 }
