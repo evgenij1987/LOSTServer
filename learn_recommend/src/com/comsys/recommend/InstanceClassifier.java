@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -66,7 +67,7 @@ public class InstanceClassifier {
     /**
      * Puts the recommendation list in a JSON format to send back to server
      * @param recommendation	The list containing the recommended songs in order of suitability
-     * @return
+     * @return list of recommended songs as a JSON string
      */
     private String recommendationToJSON(List<String> recommendation) {
         String s = "{\"songs\" : [";
@@ -107,9 +108,20 @@ public class InstanceClassifier {
         	
         }
         
-        // Remove the song which the user listened to most recently
         List <String> recommendationList = new ArrayList<String>(combinedTmap.values());
-        recommendationList.remove(lastListenedSong);
+        
+        // Remove the song which the user listened to most recently
+        //recommendationList.remove(lastListenedSong);
+        
+        Iterator<String> it = similarSongsForAudio.iterator();
+        
+        // Fill list with nearest songs in case there are not recommended enough songs from the context
+        while(recommendationList.size() < topN && it.hasNext()) {
+        	String nextSong = it.next();
+        	if(recommendationList.indexOf(nextSong) == -1) {
+        		recommendationList.add(nextSong);
+        	}
+        }
 		return recommendationList;
 		
 	}

@@ -60,9 +60,6 @@ public class Learn {
      */
     private static void runLearningPhase() throws Exception{
         // Build model (and store it for future use)
-        //File f = new File(dir + userID + ".json");
-        //f.delete();
-
     	if(!skipped) {
     		ModelBuilder mb = new ModelBuilder("../learning_data/" + userID, dir + "model/" + userID + ".model", data);
     		mb.buildModel();
