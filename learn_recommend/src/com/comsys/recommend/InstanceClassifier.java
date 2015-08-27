@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -120,12 +119,10 @@ public class InstanceClassifier {
         
         // Remove the song which the user listened to most recently
         //recommendationList.remove(lastListenedSong);
-        
-        Iterator<String> it = similarSongsForAudio.iterator();
-        
+
         // Fill list with nearest songs in case there are not recommended enough songs from the context
-        while(recommendationList.size() < topN && it.hasNext()) {
-        	String nextSong = it.next();
+        for(int i = 0; i < similarSongsForAudio.size() && recommendationList.size() < topN; i++) {
+        	String nextSong = similarSongsForAudio.get(i).replace(".json", ".mp3");
         	if(recommendationList.indexOf(nextSong) == -1) {
         		recommendationList.add(nextSong);
         	}

@@ -24,8 +24,9 @@ public class Recommend {
     // Load instances to be classified
     public static void main(String[] args) {
 
-        String userID = "";
-        String context = "";
+    	JsonObject obj;
+        String userID;
+        String context;
 
         // Read from standard input
         if(args.length < 1) {
@@ -43,7 +44,10 @@ public class Recommend {
                     	input = DataGenerator.generateRecommendationData(1, false);
                     }
 
-                    getInformationFromJSON(input, userID, context);
+                    obj = new JsonParser().parse(input).getAsJsonObject();
+                    userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"", "");;
+                    context = obj.getAsJsonObject("toRecommend").toString();
+                    
                     runRecommendationPhase(userID, context);
                 }
 
@@ -53,7 +57,9 @@ public class Recommend {
 
         } else {
             // We got arguments from command line
-        	getInformationFromJSON(args[0], userID, context);
+        	obj = new JsonParser().parse(args[0]).getAsJsonObject();
+            userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"", "");;
+            context = obj.getAsJsonObject("toRecommend").toString();
 
             try {
                 runRecommendationPhase(userID, context);
@@ -91,17 +97,4 @@ public class Recommend {
         }
        
     }
-    
-    /**
-     * Extract the information necessary for recommendation from the JSON input
-     * @param input		Information in JSON format
-     * @param userID	Will contain the user's id
-     * @param context	Will contain the context for which the user wants a recommendation
-     */
-    private static void getInformationFromJSON(String input, String userID, String context) {
-        JsonObject obj = new JsonParser().parse(input).getAsJsonObject();
-        userID = obj.getAsJsonObject("user").get("userid").toString().replace("\"", "");;
-        context = obj.getAsJsonObject("toRecommend").toString();
-    }
-
 }

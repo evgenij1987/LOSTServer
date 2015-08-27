@@ -56,7 +56,7 @@ public class ModelBuilder
 		if(instances.numInstances() < 3) { return; }		// Too few instances to build a model
 		
 		// Remove all music features
-		//instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");
+		instances = Weka_ManageInstances.attributeSelection(instances, "1,3-21");
 
 		// scale and discretize numeric values
 		//Weka_ManageInstances.scaleNumericAttributes(instances);
@@ -70,11 +70,12 @@ public class ModelBuilder
 		instances.setClassIndex(0);
 
 		// Build training and test instances
-		double percent = 1.0;
-		String attributes_filter = "1,3-21";			// Remove all music features
+		//double percent = 1.0;
+		//String attributes_filter = "1,3-21";			// Remove all music features
 
 		//testInstances	  = buildInstancesP(instances, attributes_filter, true, percent, 1.0);
-		trainingInstances = buildInstancesP(instances, attributes_filter, true, 0, percent);
+		//trainingInstances = buildInstancesP(instances, attributes_filter, true, 0, percent);
+		trainingInstances = instances;
 
 		// Build model
 		trainModel();
@@ -106,9 +107,9 @@ public class ModelBuilder
 	 * 
 	 * @throws Exception
 	 */
-	private static Instances buildInstancesP (Instances data, String attributes_filter, boolean differentNext, double percent_start, double percent_end) throws Exception
+	/*private static Instances buildInstancesP (Instances data, String attributes_filter, boolean differentNext, double percent_start, double percent_end) throws Exception
 	{		
-			/* Security (on percent_start and percent_end) */
+	 	// Security (on percent_start and percent_end)
 		percent_end 	= Math.max(percent_end, 0);
 		percent_start 	= Math.max(percent_start, 0);
 		percent_end 	= Math.min(percent_end, 1);
@@ -121,14 +122,14 @@ public class ModelBuilder
 		// Row selection
 		Instances instances = Weka_ManageInstances.percentSelection(data, percent_start, percent_end);
 
-			/* Attributes Filter */
+			// Attribute filter
 		if (attributes_filter.length()>0) instances = Weka_ManageInstances.attributeSelection(instances, attributes_filter);
 
-			/* Delete rows whose next is same. */
+			// Delete rows whose next is same.
 		if(differentNext) instances = Weka_ManageInstances.differentNextSelection(instances);
 
 		return(instances);
-	}
+	}*/
 
 	/**
 	 * Used to train a Naive Bayes classifier
